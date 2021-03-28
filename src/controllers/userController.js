@@ -1,5 +1,7 @@
 const userService = require('../services/userService');
 
+const getEmail = (req) => req.params.email || req.body.email || req.query.email;
+
 exports.createUser = async (req, res) => {
   res.json(await userService.createUser(req.body));
 };
@@ -10,11 +12,11 @@ exports.loginUser = async (req, res) => {
 };
 
 exports.logoutUser = async (req, res) => {
-  await userService.logoutUser(req.body.email);
+  await userService.logoutUser(getEmail(req));
   res.sendStatus(200);
 };
 
 exports.deleteUser = async (req, res) => {
-  await userService.deleteUser(req.params.email);
+  await userService.deleteUser(getEmail(req));
   res.sendStatus(200);
 };

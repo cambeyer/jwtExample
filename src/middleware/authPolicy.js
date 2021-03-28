@@ -1,5 +1,13 @@
 const AuthorizationError = require('../errors/authorization');
 
+const matchesBody = (req) => {
+  const emails = [req.body.email, req.params.email, req.query.email].filter((email) => email);
+  return req.user && emails.length > 0
+    && emails.every((email) => email.toLowerCase() === req.user.email);
+};
+
+const isAdmin = (req) => req.user && req.user.roles && req.user.roles.includes('Admin');
+
 exports.loggedIn = (req, res, next) => {
   if (req.user) {
     next();
@@ -7,17 +15,15 @@ exports.loggedIn = (req, res, next) => {
   next(new AuthorizationError('You must be logged in to perform this action'));
 };
 
-exports.matchesBody = (req, res, next) => {
-  if (req.user
-    && req.body.email
-    && req.user.email === req.body.email.toLowerCase()) {
+exports.matchesBodyOrAdmin = (req, res, next) => {
+  if (matchesBody(req) || isAdmin(req)) {
     next();
   }
   next(new AuthorizationError('Action cannot be performed on another user'));
 };
 
 exports.requireAdmin = (req, res, next) => {
-  if (req.user && req.user.roles && req.user.roles.includes('Admin')) {
+  if (isAdmin(req)) {
     next();
   }
   next(new AuthorizationError('Action requires administrative access'));
