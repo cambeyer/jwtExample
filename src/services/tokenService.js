@@ -9,8 +9,8 @@ exports.createToken = async (token) => {
   return tokenDatabase.create(token);
 };
 
-exports.checkToken = async (email, guid) => {
-  if ((await tokenDatabase.findMany({ email, guid })).length < 1) {
+exports.checkToken = async (email, tokenId) => {
+  if ((await tokenDatabase.findMany({ email, _id: tokenId })).length < 1) {
     throw new AuthenticationError();
   }
 };

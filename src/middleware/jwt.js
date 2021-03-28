@@ -9,7 +9,7 @@ module.exports = async (req, res, next) => {
   if (token) {
     try {
       const user = await jwt.verify(token, process.env.TOKEN_SECRET);
-      await tokenService.checkToken(user.email, user.guid);
+      await tokenService.checkToken(user.email, user.tokenId);
       req.user = user;
     } catch (e) {
       next(new AuthenticationError());

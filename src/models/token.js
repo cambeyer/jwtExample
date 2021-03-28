@@ -7,10 +7,6 @@ const tokenSchema = new mongoose.Schema({
     correctTld: true,
     required: true,
   },
-  guid: {
-    type: String,
-    required: true,
-  },
   expireAt: {
     type: Date,
     required: true,

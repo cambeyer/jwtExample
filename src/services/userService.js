@@ -1,6 +1,5 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { v4: uuidv4 } = require('uuid');
 const User = require('../models/user');
 const tokenService = require('./tokenService');
 const DatabaseService = require('./databaseService');
@@ -23,15 +22,13 @@ exports.loginUser = async (email, password) => {
     if (await bcrypt.compare(password, user.password)) {
       const now = Date.now();
       const validitySeconds = Number.parseInt(process.env.TOKEN_VALIDITY_SECONDS, 10);
-      const guid = uuidv4();
-      const token = jwt.sign({
-        email, guid, roles: user.roles, iat: Math.floor(now / 1000),
-      }, process.env.TOKEN_SECRET, { expiresIn: `${validitySeconds}s` });
-      await tokenService.createToken({
+      const { _id } = await tokenService.createToken({
         email,
-        guid,
         expireAt: new Date(now + validitySeconds * 1000),
       });
+      const token = jwt.sign({
+        email, tokenId: _id, roles: user.roles, iat: Math.floor(now / 1000),
+      }, process.env.TOKEN_SECRET, { expiresIn: `${validitySeconds}s` });
       return { token };
     }
   } catch (e) {
