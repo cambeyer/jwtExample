@@ -1,5 +1,4 @@
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const tokenService = require('./tokenService');
 const DatabaseService = require('./databaseService');
@@ -7,35 +6,27 @@ const AuthenticationError = require('../errors/authentication');
 
 const userDatabase = new DatabaseService('email', User);
 
-exports.createUser = async (user) => {
-  await new User({ ...user }).validate();
-  await userDatabase.create({
-    ...user,
-    email: user.email.toLowerCase(),
-    password: await bcrypt.hash(user.password, Number.parseInt(process.env.SALT_ROUNDS, 10)),
-  });
-};
+const findUser = async (email) => userDatabase.findOne(email.toLowerCase());
+
+exports.createUser = async (user) => userDatabase.create({
+  ...user,
+  email: user.email.toLowerCase(),
+  password: await bcrypt.hash(user.password, Number.parseInt(process.env.SALT_ROUNDS, 10)),
+});
 
 exports.loginUser = async (email, password) => {
   try {
-    const user = await userDatabase.findOne(email.toLowerCase());
+    const user = await findUser(email);
     if (await bcrypt.compare(password, user.password)) {
-      const now = Date.now();
-      const validitySeconds = Number.parseInt(process.env.TOKEN_VALIDITY_SECONDS, 10);
-      const { _id } = await tokenService.createToken({
-        email,
-        expireAt: new Date(now + validitySeconds * 1000),
-      });
-      const token = jwt.sign({
-        email, tokenId: _id, roles: user.roles, iat: Math.floor(now / 1000),
-      }, process.env.TOKEN_SECRET, { expiresIn: `${validitySeconds}s` });
-      return { token };
+      return tokenService.createToken(user);
     }
   } catch (e) {
     // all errors should be masked without giving any detail
   }
   throw new AuthenticationError();
 };
+
+exports.findUser = findUser;
 
 exports.logoutUser = async (email) => tokenService.clearTokens(email);
 
