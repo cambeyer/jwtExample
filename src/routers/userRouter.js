@@ -8,5 +8,6 @@ router.postAsync('/login', userController.loginUser);
 router.postAsync('/logout', authPolicy.matchesBodyOrAdmin, userController.logoutUser);
 
 router.deleteAsync('/:email', authPolicy.matchesBodyOrAdmin, userController.deleteUser);
+router.getAsync('/:email', userController.getUser);
 
 module.exports = router;

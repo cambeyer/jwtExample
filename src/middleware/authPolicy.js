@@ -1,4 +1,5 @@
 const AuthorizationError = require('../errors/authorization');
+const userService = require('../services/userService');
 
 const matchesBody = (req) => {
   const emails = [req.body.email, req.params.email, req.query.email].filter((email) => email);
@@ -27,4 +28,9 @@ exports.requireAdmin = (req, res, next) => {
     next();
   }
   next(new AuthorizationError('Action requires administrative access'));
+};
+
+exports.refreshUser = async (req, res, next) => {
+  req.user = await userService.findUser(req.user.email);
+  next();
 };

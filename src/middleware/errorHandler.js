@@ -1,4 +1,4 @@
-module.exports = (error, request, response, next) => {
+module.exports = (error, request, response, _next) => {
   switch (error.name) {
     case 'AuthenticationError':
       response.sendStatus(401);
