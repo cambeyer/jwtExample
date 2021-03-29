@@ -1,13 +1,13 @@
 {
   "name": "jwt",
   "version": "1.0.0",
-  "description": "",
+  "description": "This project provides an example of a basic JWT implementation",
   "main": "server.js",
   "scripts": {
     "lint": "./node_modules/.bin/eslint src/**/*.js --fix"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["jwt", "example", "crud", "bcrypt", "users", "login", "authentication", "authorization"],
+  "author": "Cameron Beyer",
   "license": "ISC",
   "dependencies": {
     "@awaitjs/express": "^0.7.2",
