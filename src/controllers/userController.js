@@ -1,3 +1,5 @@
+const statusCodes = require('http-status-codes');
+
 const userService = require('../services/userService');
 const tokenService = require('../services/tokenService');
 
@@ -14,14 +16,14 @@ exports.loginUser = async (req, res) => {
 
 exports.logoutUser = async (req, res) => {
   await tokenService.clearTokens(getEmail(req));
-  res.sendStatus(200);
+  res.sendStatus(statusCodes.OK);
 };
 
 exports.deleteUser = async (req, res) => {
   const email = getEmail(req);
   await tokenService.clearTokens(email);
   await userService.deleteUser(email);
-  res.sendStatus(200);
+  res.sendStatus(statusCodes.OK);
 };
 
 exports.getUser = async (req, res) => {

@@ -1,19 +1,21 @@
+const statusCodes = require('http-status-codes');
+
 module.exports = (error, request, response, _next) => {
   switch (error.name) {
     case 'AuthenticationError':
-      response.sendStatus(401);
+      response.sendStatus(statusCodes.UNAUTHORIZED);
       break;
     case 'AuthorizationError':
-      response.status(403).send(error.message);
+      response.status(statusCodes.FORBIDDEN).send(error.message);
       break;
     case 'RecordNotFoundError':
-      response.sendStatus(404);
+      response.sendStatus(statusCodes.NOT_FOUND);
       break;
     case 'ValidationError':
-      response.sendStatus(400);
+      response.sendStatus(statusCodes.BAD_REQUEST);
       break;
     default:
-      response.sendStatus(500);
+      response.sendStatus(statusCodes.INTERNAL_SERVER_ERROR);
       break;
   }
 };
