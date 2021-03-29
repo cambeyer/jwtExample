@@ -1,4 +1,5 @@
 const userService = require('../services/userService');
+const tokenService = require('../services/tokenService');
 
 const getEmail = (req) => req.params.email || req.body.email || req.query.email;
 
@@ -13,12 +14,14 @@ exports.loginUser = async (req, res) => {
 };
 
 exports.logoutUser = async (req, res) => {
-  await userService.logoutUser(getEmail(req));
+  await tokenService.clearTokens(getEmail(req));
   res.sendStatus(200);
 };
 
 exports.deleteUser = async (req, res) => {
-  await userService.deleteUser(getEmail(req));
+  const email = getEmail(req);
+  await tokenService.clearTokens(email);
+  await userService.deleteUser(email);
   res.sendStatus(200);
 };
 

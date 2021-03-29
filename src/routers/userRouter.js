@@ -1,13 +1,22 @@
 const router = require('@awaitjs/express').Router();
+const { wrap } = require('@awaitjs/express');
 
 const userController = require('../controllers/userController');
 const authPolicy = require('../middleware/authPolicy');
 
 router.postAsync('/signup', userController.createUser);
 router.postAsync('/login', userController.loginUser);
-router.postAsync('/logout', authPolicy.matchesBodyOrAdmin, userController.logoutUser);
 
-router.deleteAsync('/:email', authPolicy.matchesBodyOrAdmin, userController.deleteUser);
+router.postAsync('/logout', [
+  wrap(authPolicy.loggedIn, false),
+  wrap(authPolicy.matchesBodyOrAdmin, false),
+], userController.logoutUser);
+
+router.deleteAsync('/:email', [
+  wrap(authPolicy.loggedIn, false),
+  wrap(authPolicy.matchesBodyOrAdmin, false),
+], userController.deleteUser);
+
 router.getAsync('/:email', userController.getUser);
 
 module.exports = router;

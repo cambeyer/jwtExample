@@ -18,9 +18,11 @@ module.exports = async (req, res, next) => {
   if (token) {
     try {
       req.user = await checkToken(req, token);
+      next();
     } catch (e) {
       next(new AuthenticationError());
     }
+  } else {
+    next();
   }
-  next();
 };

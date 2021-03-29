@@ -28,6 +28,4 @@ exports.loginUser = async (email, password) => {
 
 exports.findUser = findUser;
 
-exports.logoutUser = async (email) => tokenService.clearTokens(email);
-
 exports.deleteUser = async (email) => userDatabase.deleteOne(email);

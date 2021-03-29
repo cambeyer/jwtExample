@@ -10,24 +10,24 @@ const matchesBody = (req) => {
 const isAdmin = (req) => req.user && req.user.roles && req.user.roles.includes('Admin');
 
 exports.loggedIn = (req, res, next) => {
-  if (req.user) {
-    next();
+  if (!req.user) {
+    throw new AuthorizationError('You must be logged in to perform this action');
   }
-  next(new AuthorizationError('You must be logged in to perform this action'));
+  next();
 };
 
 exports.matchesBodyOrAdmin = (req, res, next) => {
-  if (matchesBody(req) || isAdmin(req)) {
-    next();
+  if (!matchesBody(req) && !isAdmin(req)) {
+    throw new AuthorizationError('Action cannot be performed on another user');
   }
-  next(new AuthorizationError('Action cannot be performed on another user'));
+  next();
 };
 
 exports.requireAdmin = (req, res, next) => {
-  if (isAdmin(req)) {
-    next();
+  if (!isAdmin(req)) {
+    throw new AuthorizationError('Action requires administrative access');
   }
-  next(new AuthorizationError('Action requires administrative access'));
+  next();
 };
 
 exports.refreshUser = async (req, res, next) => {

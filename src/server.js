@@ -1,6 +1,8 @@
 require('dotenv').config();
 
 const express = require('express');
+const { addAsync } = require('@awaitjs/express');
+
 const mongoose = require('mongoose');
 
 const userRouter = require('./routers/userRouter');
@@ -8,10 +10,10 @@ const tokenRouter = require('./routers/tokenRouter');
 const jwtMiddleware = require('./middleware/jwt');
 const errorHandler = require('./middleware/errorHandler');
 
-const app = express();
+const app = addAsync(express());
 
 app.use(express.json());
-app.use(jwtMiddleware);
+app.useAsync(jwtMiddleware);
 app.use('/tokens', tokenRouter);
 app.use('/users', userRouter);
 app.use(errorHandler);
