@@ -15,7 +15,7 @@ module.exports = class DbService {
       throw (
         exception.code === 11000
                 || exception.stack.includes('ValidationError')
-                || (exception.reason !== undefined && exception.reason.code === 'ERR_ASSERTION')
+                || (exception.reason?.code === 'ERR_ASSERTION')
           ? new ValidationError(exception.message) : new GenericDbError()
       );
     }

@@ -14,7 +14,7 @@ const checkToken = async (req, token) => {
 
 module.exports = async (req, res, next) => {
   const authHeader = req.headers.authorization;
-  const token = authHeader && authHeader.split(' ')[1];
+  const token = authHeader?.split(' ')[1];
   if (token) {
     try {
       req.user = await checkToken(req, token);

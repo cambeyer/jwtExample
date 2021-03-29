@@ -4,7 +4,7 @@ const { wrap } = require('@awaitjs/express');
 const userController = require('../controllers/userController');
 const authPolicy = require('../middleware/authPolicy');
 
-router.postAsync('/signup', userController.createUser);
+router.postAsync('/signup', authPolicy.adminsCreateAdmins, userController.createUser);
 router.postAsync('/login', userController.loginUser);
 
 router.postAsync('/logout', [
