@@ -4,8 +4,7 @@ const tokenService = require('../services/tokenService');
 const getEmail = (req) => req.params.email || req.body.email || req.query.email;
 
 exports.createUser = async (req, res) => {
-  await userService.createUser(req.body);
-  res.sendStatus(200);
+  res.json(await userService.createUser(req.body));
 };
 
 exports.loginUser = async (req, res) => {

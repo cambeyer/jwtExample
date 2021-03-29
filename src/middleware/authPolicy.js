@@ -1,5 +1,6 @@
 const AuthorizationError = require('../errors/authorization');
 const userService = require('../services/userService');
+const tokenService = require('../services/tokenService');
 
 const matchesBody = (req) => {
   const emails = [req.body.email, req.params.email, req.query.email].filter((email) => email);
@@ -32,5 +33,10 @@ exports.requireAdmin = (req, res, next) => {
 
 exports.refreshUser = async (req, res, next) => {
   req.user = await userService.findUser(req.user.email);
+  next();
+};
+
+exports.forceCheckToken = async (req, res, next) => {
+  await tokenService.checkToken(req.user.email, req.user.tokenId);
   next();
 };

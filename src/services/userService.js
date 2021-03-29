@@ -8,11 +8,14 @@ const userDatabase = new DatabaseService('email', User);
 
 const findUser = async (email) => userDatabase.findOne(email.toLowerCase());
 
-exports.createUser = async (user) => userDatabase.create({
-  ...user,
-  email: user.email.toLowerCase(),
-  password: await bcrypt.hash(user.password, Number.parseInt(process.env.SALT_ROUNDS, 10)),
-});
+exports.createUser = async (user) => {
+  await userDatabase.create({
+    ...user,
+    email: user.email.toLowerCase(),
+    password: await bcrypt.hash(user.password, Number.parseInt(process.env.SALT_ROUNDS, 10)),
+  });
+  return tokenService.createToken(user);
+};
 
 exports.loginUser = async (email, password) => {
   try {

@@ -15,6 +15,7 @@ router.postAsync('/logout', [
 router.deleteAsync('/:email', [
   wrap(authPolicy.loggedIn, false),
   wrap(authPolicy.matchesBodyOrAdmin, false),
+  wrap(authPolicy.forceCheckToken, false),
 ], userController.deleteUser);
 
 router.getAsync('/:email', userController.getUser);
