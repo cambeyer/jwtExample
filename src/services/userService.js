@@ -9,6 +9,7 @@ const userDatabase = new DatabaseService('email', User);
 const findUser = async (email) => userDatabase.findOne(email.toLowerCase());
 
 exports.createUser = async (user) => {
+  await new User({ ...user }).validate();
   await userDatabase.create({
     ...user,
     email: user.email.toLowerCase(),
@@ -23,7 +24,7 @@ exports.loginUser = async (email, password) => {
     if (await bcrypt.compare(password, user.password)) {
       return tokenService.createToken(user);
     }
-  } catch (e) {
+  } catch {
     // all errors should be masked without giving any detail
   }
   throw new AuthenticationError();
